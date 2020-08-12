@@ -1,0 +1,299 @@
+<?php if($_SERVER["DOCUMENT_ROOT"]==null || empty($_SERVER["DOCUMENT_ROOT"])) {
+    $_SERVER["DOCUMENT_ROOT"] = "/home/bitrix/www";
+}
+/**
+ * Забираем все проекты с jira (curl)
+ * Цепляем key проекта и переходим с его помощью на ссылку проекта
+ * Проверяем условием на описание проекта каждый проект (который является отдельным объектом)
+ * Если условие пройдено создаём массив нужных проект с ID jira и Б24
+ *
+ *
+ * Приводим форматы дат(понадобится для URL)
+ * Теперь зная айди листаем проекты какого-то темпо (Видимо в нём лежат пользователи с jira)
+ * С помощью bitrix api getlist и айди полученными проекта из jira создаём массив пользователей с проектами
+
+ **/
+
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+define("NEED_AUTH", false);
+define("NO_KEEP_STATISTIC", true);
+define("NOT_CHECK_PERMISSIONS", true);
+require_once($_SERVER['DOCUMENT_ROOT'].'/bitrix/modules/main/include/prolog_before.php');
+require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.php");
+use \Bitrix\Main\Loader;
+use Rospartner\TimeTracking\TimeTrackingJiraTable;
+use \Bitrix\Main\Type\DateTime;
+use \Rospartner\TimeTracking as TT;
+if(!Loader::IncludeModule('rospartner.timetracking')) { return false;}
+
+//пользователь для работы с api JIRA
+$JIRA_URL="https://rospartner.atlassian.net";
+$JIRA_USERNAME="integrationjira@rospartner.ru";
+$JIRA_PASSWORD="GuVrVp2kFK4ljEXnhHiS1CA1";
+
+
+
+// Получаем список всех проектов в jira
+$objCurl = curl_init();
+curl_setopt_array($objCurl, array(
+    CURLOPT_URL => $JIRA_URL . '/rest/api/2/project',
+    CURLOPT_USERPWD => $JIRA_USERNAME . ':' . $JIRA_PASSWORD,
+    CURLOPT_HTTPHEADER => array('Content-type: application/json'),
+    CURLOPT_RETURNTRANSFER => true      //Создаёт строку в результате, а не выводит в браузер
+));
+
+$result_projects = curl_exec($objCurl);
+$project = json_decode($result_projects);
+curl_close($objCurl);
+//Теперь $project это ообъект и можно обращаться к его полям через ->
+dump($project);
+echo '<br><br><br><br>' ;
+$projects=[];
+foreach ($project as $item) {
+    $objCurl_pr = curl_init();
+    curl_setopt_array($objCurl_pr, array(
+        CURLOPT_URL => $JIRA_URL . '/rest/api/2/project/'.$item->key,
+        CURLOPT_USERPWD => $JIRA_USERNAME . ':' . $JIRA_PASSWORD,
+        CURLOPT_HTTPHEADER => array('Content-type: application/json'),
+        CURLOPT_RETURNTRANSFER => true
+    ));
+    $result_project_info = curl_exec($objCurl_pr);
+    $project_info = json_decode($result_project_info);
+    curl_close($objCurl_pr);
+    // Вычислим проекты в которых заполненно описание
+    //забираем описание проекта, что бы получить id проектов c b24
+    if ($project_info->description && (int)substr("$project_info->description", 0, 4)>0 /*Вот это условие не совсем понял*/) {
+        $projects[$item->key]['ID']=$item->id;
+        $projects[$item->key]['KEY']=$item->key;
+        $projects[$item->key]['NAME']=$item->name;
+        $projects[$item->key]['B24']=(int)substr("$project_info->description", 0, 4);
+        echo "<hr>";
+        dump($projects);
+    }
+
+}
+
+
+
+
+
+
+
+//вычисляем необходимые даты для выгрузки из JIRA и загрузки b24
+$day_today=new DateTime();
+$day_today_format_jira=$day_today->format("Y-m-d");
+$day_today_format_b24=$day_today->format("d.m.Y");
+$day_month_ago = $day_today->add("-30 day");
+$day_month_ago_format_jira = $day_month_ago->format("Y-m-d");
+$day_month_ago_format_b24 = $day_month_ago->format("d.m.Y");
+
+
+//проходим по циклу интеграции
+foreach ($projects as $project) {       //Переменная $project не конфликтует с объектом $project?
+    $project_jira = $project['KEY'];
+    $project_b24 = $project['B24'];
+    //Выгружаем временной лог по проекту
+    //$authorization = "Authorization: Bearer pcjrd4iv4VIeIZ4ehkNQDGvwc3YpxL"; //melezhik
+    $authorization = "Authorization: Bearer 13tLQlhNDkm86oDJLLw3OheyvvsJCQ"; //mo4alov
+    $ch = curl_init();
+    $url = "https://api.tempo.io/core/3/worklogs/project/" . $project_jira . "?limit=1000&from=" . $day_month_ago_format_jira . "&to=" . $day_today_format_jira;    //Что это за сайт?
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', $authorization));
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    $result = curl_exec($ch);
+    curl_close($ch);
+    $result_encode = json_decode($result)->results;
+    if ($result_encode) {
+
+        // Получаем список пользователей по проекту c указаным ключом
+        $objCurl = curl_init();
+        curl_setopt_array($objCurl, array(
+            CURLOPT_URL => $JIRA_URL . '/rest/api/2/user/assignable/multiProjectSearch?projectKeys=' . $project_jira . '&maxResults=1000',  //Не пускает
+            CURLOPT_USERPWD => $JIRA_USERNAME . ':' . $JIRA_PASSWORD,
+            CURLOPT_HTTPHEADER => array('Content-type: application/json'),
+            CURLOPT_RETURNTRANSFER => true
+        ));
+        //Наверно выдаёт всех пользователей в текущем проекте
+        $result_users = curl_exec($objCurl);
+        $users = json_decode($result_users);
+        curl_close($objCurl);
+//        echo "<pre>"; print_r($users); echo "</pre>";                     //Снял die(), но всё равно не дампится.
+        if ($users) {
+            $user_project = [];
+            foreach ($users as $user) {
+                $user_project[$user->displayName]['key'] = $user->key;
+                $user_project[$user->displayName]['accountId'] = $user->accountId;
+                $user_project[$user->displayName]['name'] = $user->name;
+                $user_project[$user->displayName]['displayName'] = $user->displayName;
+                $user_project[$user->displayName]['email'] = $user->emailAddress;
+            }
+        } else {
+            echo $result_users . "for search users JIRA! \n";
+            return false;
+        }
+
+        // Получим всех пользователей проекта в b24
+        $users = TT\Projects::getUserList($project_b24);
+        $users_from_name = [];
+        $users_from_email = [];
+        foreach ($users as $user) {
+            $filter = Array     //Фильтрация по нужным пользователям
+            (
+                "ID" => $user['USER_ID'],
+            );
+            $select = Array
+            ("ID", "NAME", "LAST_NAME");
+            $rsUsers = CUser::GetList(($by = "NAME"), ($order = "desc"), $filter, false, $select);
+            if ($arUser = $rsUsers->Fetch()) {//Почему не GetNext
+                $users_from_name[$arUser["LAST_NAME"] . " " . $arUser["NAME"]]["ID"] = $arUser["ID"];
+                $users_from_name[$arUser["LAST_NAME"] . " " . $arUser["NAME"]]["NAME"] = $arUser["NAME"];
+                $users_from_name[$arUser["LAST_NAME"] . " " . $arUser["NAME"]]["LAST_NAME"] = $arUser["LAST_NAME"];
+                $users_from_name[$arUser["LAST_NAME"] . " " . $arUser["NAME"]]["LOGIN"] = $arUser["LOGIN"];
+
+                $users_from_email[$arUser['EMAIL']]["ID"] = $arUser["ID"];
+                $users_from_email[$arUser['EMAIL']]["NAME"] = $arUser["NAME"];
+                $users_from_email[$arUser['EMAIL']]["LAST_NAME"] = $arUser["LAST_NAME"];
+                $users_from_email[$arUser['EMAIL']]["LOGIN"] = $arUser["LOGIN"];
+            }
+        }
+        //echo "<pre>"; print_r($users_from_email); echo "</pre>";
+        //echo "<pre>"; print_r($users_from_name); echo "</pre>";
+
+        $issue_log = [];
+        foreach ($result_encode as $log) {
+            $objDateTime = new DateTime($log->startDate, "Y-m-d");
+            $time = explode("T", $log->startDate);
+            $issue_log[$objDateTime->format("d.m.Y")][$log->author->displayName][] = [
+                'id' => $log->jiraWorklogId,
+                'time' => $log->timeSpentSeconds,
+                'date' => $log->createdAt,
+                'startDate' => $log->startDate,
+                'author_id' => $log->author->accountId,
+                'author_name' => $log->author->displayName,
+                'issue' => $log->issue->key
+            ];
+        }
+
+        // получим рабочий лог с таблицы за проект
+        $array_table = [];  //массив для хранения записей по проектам с б24
+        $options_jira = [
+            'filter' => [
+                'PROJECT_ID' => $project_b24,
+                '>=DATE' => new DateTime($day_month_ago_format_b24),
+                '<=DATE' => new DateTime($day_today_format_b24),
+            ],
+            'select' => ["*"]
+        ];
+
+        $res_jira = TT\TimeTrackingJiraTable::getList($options_jira);
+        foreach ($res_jira as $time) {
+            //$array_table[$time['DATE']->format("d.m.Y")."-".$time['BX_USER_ID']]["BX_USER_ID"]=$time['BX_USER_ID'];
+            $array_table[$time['DATE']->format("d.m.Y") . "-" . $time['BX_USER_ID']]['TIME_TRACK'] = $time['TIME_TRACK'];
+            $array_table[$time['DATE']->format("d.m.Y") . "-" . $time['BX_USER_ID']]['ID'] = $time['ID'];
+        }
+
+        //формируем записи для загрузку в таблицу
+        $log_for_b24 = [];
+        foreach ($issue_log as $issue => $log):
+            foreach ($log as $user => $item):
+                $n = 0;
+                foreach ($item as $log_end) {
+                    $n = $n + $log_end['time'];
+                }
+                //добавим эти записи в таблицу
+                if ($users_from_name[$user]['ID']) {
+                    $time_for_table = round($n / 3600, 2);
+                    $user_id_b24 = $users_from_name[$user]['ID'];
+                    $key_find = $issue . "-" . $user_id_b24;
+                    $log_for_b24[] = [
+                        "BX_USER_ID" => $user_id_b24,
+                        "USER_NAME" => $user,
+                        "DATE" => $issue,
+                        "TIME_TRACK" => $time_for_table,
+                        "PROJECT_ID" => $project_b24,
+                        "PROJECT_KEY_JIRA" => $project_jira,
+                        "USER_ID_JIRA" => $user_project[$user]['accountId'],
+                    ];
+
+                    $fieldsAdd = [
+                        "BX_USER_ID" => $user_id_b24,
+                        "DATE" => new DateTime($issue),
+                        "TIME_TRACK" => $time_for_table,
+                        "PROJECT_ID" => $project_b24,
+                        "PROJECT_KEY_JIRA" => $project_jira,
+                        "USER_ID_JIRA" => $user_project[$user]['accountId'],
+                    ];
+
+                    if ($array_table[$key_find]) {
+                        //Лог у данного пользователя в эту дату есть
+                        if ($array_table[$key_find]["TIME_TRACK"] == $time_for_table) {
+                            //Время совпадает, обновлять лог не нужно
+                            unset($array_table[$key_find]);
+                        } else {
+                            //Время отличается, надо лог за эту дату ОБНОВИТЬ
+                            $res = TT\TimeTrackingJiraTable::update($array_table[$key_find]['ID'], $fieldsAdd);
+                            unset($array_table[$key_find]);
+                        }
+                    } else {
+                        //Лога у данного пользователя за эту дату нет надо СОЗДАТЬ
+                        $res = TT\TimeTrackingJiraTable::add($fieldsAdd);
+                    }
+                } else {
+                    // делаем проверку по почте
+                    //echo $user." ".$user_project[$user]['email']." Пользователя с таким ФИО не нашли но лог есть<br/>";
+                    if ($users_from_email[$user_project[$user]['email']]['ID']) {
+                        $time_for_table = round($n / 3600, 2);
+                        $user_id_b24 = $users_from_email[$user_project[$user]['email']]['ID'];
+                        $key_find = $issue . "-" . $user_id_b24;
+                        $log_for_b24[] = [
+                            "BX_USER_ID" => $user_id_b24,
+                            "USER_NAME" => $user,
+                            "DATE" => $issue,
+                            "TIME_TRACK" => $time_for_table,
+                            "PROJECT_ID" => $project_b24,
+                            "PROJECT_KEY_JIRA" => $project_jira,
+                            "USER_ID_JIRA" => $user_project[$user]['accountId'],
+                        ];
+
+                        $fieldsAdd = [
+                            "BX_USER_ID" => $user_id_b24,
+                            "DATE" => new DateTime($issue),
+                            "TIME_TRACK" => $time_for_table,
+                            "PROJECT_ID" => $project_b24,
+                            "PROJECT_KEY_JIRA" => $project_jira,
+                            "USER_ID_JIRA" => $user_project[$user]['accountId'],
+                        ];
+
+                        if ($array_table[$key_find]) {
+                            //Лог у данного пользователя в эту дату есть
+                            if ($array_table[$key_find]["TIME_TRACK"] == $time_for_table) {
+                                //Время совпадает, обновлять лог не нужно
+                                unset($array_table[$key_find]);
+                            } else {
+                                //Время отличается, надо лог за эту дату ОБНОВИТЬ
+                                $res = TT\TimeTrackingJiraTable::update($array_table[$key_find]['ID'], $fieldsAdd);
+                                unset($array_table[$key_find]);
+                            }
+                        } else {
+                            //Лога у данного пользователя за эту дату нет надо СОЗДАТЬ
+                            $res = TT\TimeTrackingJiraTable::add($fieldsAdd);
+                        }
+                    }
+                }
+            endforeach;
+        endforeach;
+
+        // этих записей в jira за промежуток не осталось их надо удалить
+        foreach ($array_table as $delete_row) {
+            $res = TT\TimeTrackingJiraTable::delete($delete_row['ID']);
+        }
+
+    } else {
+        echo $result;
+    }
+}
+
