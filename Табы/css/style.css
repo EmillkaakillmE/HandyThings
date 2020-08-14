@@ -66,6 +66,8 @@ h1,h2,h3,h4,h5,h6{
 	min-height: 100%;
 	position: relative;
 	overflow: hidden;
+	background-color: #0f5a42;
+	color: #fff;
 }
 
 .content {
@@ -88,14 +90,24 @@ h1,h2,h3,h4,h5,h6{
 	align-items: center;
 	text-transform: uppercase;
 	text-decoration: none;
-	color: #000;
+	color: #fff;
 }
-.tabs__body {}
+
+.tabs__item span{
+	position: relative;
+	z-index: 2;
+}
+
+.tabs__body {
+	
+}
 .tabs__block {
 	padding: 20px;
 	font-size: 18px;
 	line-height: 24px;
 	display: none;
+	/*Относительно этого класса задаём псевдоэлменты*/
+	position: relative;
 }
 .tabs__block:nth-child(1) {
 	background-color: #a038b3;
@@ -113,6 +125,45 @@ h1,h2,h3,h4,h5,h6{
 	display: block;
 }
 
+
+/*Выкручиваемся с псевдоэлементами для подсветки менюшек таба*/
+.tabs__block::before{
+	content: '';
+	height: 50px;	/*Такая же, как и у вкладки таба в классе tabs__item*/
+	width: 33.333%;
+	position: absolute;
+	top: -50px;
+}
+
+.tabs__block:nth-child(1)::before{
+	background-color: #a038b3;
+	left: 0;
+}
+
+.tabs__block:nth-child(2)::before{
+	background-color: #ded349;
+	left: 33.333%;
+}
+
+.tabs__block:nth-child(3)::before{
+	background-color: #3279e4;
+	right: 0;
+}
+
+
+/*Адаптив менюшек таба*/
+@media (max-width: 600px) {
+	.tabs__item span{
+		display: block;
+		width: 100px;
+		padding: 0 5px;
+		white-space: nowrap;
+		text-align: center;
+		overflow: hidden;
+		font-size: 14px;
+		text-overflow: ellipsis;
+	}
+}
 
 
 
