@@ -56,6 +56,8 @@
 				"bdra": "border-radius: |;",
 				
 				// "bdra": "border-radius:${1:0} ${2:0} ${3:0} ${4:0};",
+				
+				"fonts": "@font-face {\n	font-family: '${1:font_name}';\n	src: url('../fonts/${2:font_file}.eot');\n	src: url('../fonts/${2:font_file}.woff') format('woff'), url('../fonts/${2:font_file}.ttf') format('truetype'), url('../fonts/${2:font_file}.svg') format('svg');\n	font-weight: ${3:400};\n	font-style: normal;\n}"
 			}
 		},
 	}
