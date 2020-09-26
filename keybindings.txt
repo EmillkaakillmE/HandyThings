@@ -1,0 +1,22 @@
+[
+	{
+		"keys": ["ctrl+1"], "command": "goto_css_declaration",
+		"args": {"goto": "next"}
+	},
+
+	{"keys":["ctrl+`"], "command":"tag_classes" },
+
+	{ "keys": ["ctrl+d"], "command": "duplicate_line"},
+	{ "keys": ["ctrl+shift+o"], "command": "quick_create_file" },
+	{ "keys": ["ctrl+shift+d"], "command": "quick_create_directory" },
+
+	{ "keys": ["ctrl+keypad_divide"], "command": "toggle_comment", "args": { "block": false } },
+	{ "keys": ["ctrl+shift+keypad_divide"], "command": "toggle_comment", "args": { "block": true } },
+
+	{ "keys": ["alt+shift+w"], "command": "insert_snippet", "args": { "name": "Packages/XML/Snippets/long-tag.sublime-snippet" } },
+
+	/*Ctrl+Shift+G - Обернуть в любой тег. (Нажимать после выделения текста, который нужно обернуть)*/
+
+	{ "keys": ["alt+shift+up"], "command": "select_lines", "args": {"forward": false} },
+	{ "keys": ["alt+shift+down"], "command": "select_lines", "args": {"forward": true} },
+]

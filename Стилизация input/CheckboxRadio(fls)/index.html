@@ -1,0 +1,61 @@
+<!-- Сообщаем браузеру как стоит обрабатывать эту страницу -->
+<!DOCTYPE html>
+<!-- Оболочка документа, указываем язык содержимого -->
+<html lang="ru">
+	<!-- Заголовок страницы, контейнер для других важных данных (не отображается) -->
+	<head>
+		<!-- Заголовок страницы в браузере -->
+		<title>Элементы форм №1. Как это сделать? HTML+CSS+jQuery</title>
+		<!-- Подключаем CSS -->
+		<link rel="stylesheet" href="css/style.css" />
+		<!-- Кодировка страницы -->
+		<meta charset="UTF-8">
+		<!-- Адаптив -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+	</head>
+	<!-- Отображаемое тело страницы -->
+	<body>
+		<!-- Оболочка для демонстрации -->
+		<div class="wrapper">
+			<!-- Контент -->
+			<form method="post" action="server/check.php" class="block-form">
+				<div class="block-form__title">Стили элементов форм</div>
+				<div class="block-form__input">
+					<div class="checkbox">
+						Выключатель №1
+						<input type="checkbox" checked name="namecheckbox_1">
+					</div>
+				</div>
+				<div class="block-form__input">
+					<div class="checkbox">
+						Выключатель №2
+						<input type="checkbox" name="namecheckbox_2">
+					</div>
+				</div>
+				
+				<div class="block-form__input">
+					<div class="radiobuttons">
+						<div class="radiobuttons__item">
+							Вариант №1
+							<input type="radio" value="1" checked name="nameradio">
+						</div>
+						<div class="radiobuttons__item">
+							Вариант №2
+							<input type="radio" value="2" name="nameradio">
+						</div>
+						<div class="radiobuttons__item">
+							Вариант №3
+							<input type="radio" value="3" name="nameradio">
+						</div>
+					</div>
+				</div>
+				
+				<button class="button" type="submit"><span>Отправить форму</span></button>
+			</form>
+		</div>
+		<!-- Подключаем jQuery -->
+		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+		<!-- Подключаем файл JS скриптов -->
+		<script src="js/script.js"></script>
+	</body>
+</html>
