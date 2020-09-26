@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Плеер на JS</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<video width="400" height="300" id="video-player" poster="img/poster.jpg">
+    <source src="vids/Minecraft%20Drop%20Edit%20%231%20Shaders%201440p%2060fps%20(RUDE%20-%20Eternal%20Youth).mp4" type="video/mp4">
+</video>
+
+<div class="bar-container">
+    <progress id="progress" max="100" value="0"></progress>
+</div>
+
+<div id="play">
+    <button id="play__btn">PLAY</button>
+</div>
+<div id="pause">
+    <button id="pause__btn">PAUSE</button>
+</div>
+<div id="stop">
+    <button id="stop__btn">STOP</button>
+</div>
+<div id="speed-up">
+    <button id="speed-up__btn">SPEED-UP</button>
+</div>
+<div id="speed-down">
+    <button id="speed-down__btn">SPEED-DOWN</button>
+</div>
+<div id="speed-normal">
+    <button id="speed-normal__btn">SPEED-normal</button>
+</div>
+<div id="volume">
+    <input id="volume__inp" min="0" max="100" type="range">Звук
+</div>
+
+<script src="js/jq.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

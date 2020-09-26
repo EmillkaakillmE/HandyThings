@@ -1,0 +1,7 @@
+.bar-container{
+    max-width: 980px;
+    margin: 0 auto;
+}
+.bar-container progress{
+    width: 100%;
+}
