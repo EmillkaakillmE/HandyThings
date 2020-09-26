@@ -1,64 +1,75 @@
 {
-	"snippets": {
-			"html": {
-				"snippets": {
-					"!": "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n	<meta charset=\"UTF-8\">\n	<title>|</title>\n</head>\n<body>\n	\n</body>\n</html>",
-					
-					"!!":"<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n	<meta charset=\"UTF-8\">\n	<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n	<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n	<link rel=\"stylesheet\" href=\"|\" type=\"text/css\" charset=\"utf-8\">\n	<title>|</title>\n</head>\n<body>\n	\n<script type=\"text/javascript\" src=\"|\"></script>\n</body>\n</html>",
-					
-					"!!!":"<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n	<meta charset=\"UTF-8\">\n	<meta name=\"format-detection\" content=\"telephone=no\">\n	<meta name=\"description\" content=\"Описание страницы\"/>\n	<link href=\"#\" rel=\"shortcut icon\" type=\"image/x-icon\"/>\n	<meta name=\"keywords\" content=\"ключевые слова\"/>\n	<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n	<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n	<meta name=\"HandheldFriendly\" content=\"true\">\n\n	<meta property=\"og:locale\" content=\"ru_RU\">\n	<meta property=\"og:type\" content=\"article\">\n	<meta property=\"og:title\" content=\"Заголовок репоста\">\n	<meta property=\"og:description\" content=\"Описание репоста\">\n	<meta property=\"og:image\" content=\"#\">\n	<meta property=\"og:url\" content=\"#\">\n	<meta property=\"og:site_name\" content=\"название сайта\">\n\n	<meta name=\"twitter:card\" content=\"summary\">\n	<meta name=\"twitter:site\" content=\"Имя автора\">\n	<meta name=\"Название твита\" content=\"Название страницы\">\n	<meta name=\"Описание твита\" content=\"Описание страницы\">\n	<meta name=\"twitter:image\" content=\"#\">\n\n	<title>|</title>\n	<link rel=\"stylesheet\" href=\"|\" type=\"text/css\" charset=\"utf-8\">\n</head>\n<body>\n	\n<script type=\"text/javascript\" src=\"|\"></script>\n</body>\n</html>",
+	"bem": true,
+	"auto_id_class": true,
+	"tag_preview": true,
 
-					"wrap": "<div class = \"wrapper\">|</div>",
-					"container": "<div class = \"container\">|</div>",
-					
-					"a!": "<a href=\"|\" title=\"|\" type=\"|\" target=\"|\"></a>",
-					
-					"scr": "<script type=\"text/javascript\">\n	|\n</script>",
-					"scr:src": "<script type=\"text/javascript\" src=\"|\"></script>",
-					
-					"form": "<form action=\"${1:#}\" method=\"${2:post}\">\n	|\n</form>",
-					"form:get": "<form action=\"${1:#}\" method=\"get\">\n	|\n</form>",
-					"form:post": "<form action=\"${1:#}\" method=\"post\">\n	|\n</form>",
-					
-					"inp": "<input type=\"${1:text}\" name=\"${2:#}\" class=\"${3:#}\" placeholder=\"${4:#}\">",
-					"inp:mail": "<input type=\"${1:email}\" name=\"${2:#}\" class=\"${3:#}\" placeholder=\"${4:#}\">",
-					"inp:pass": "<input type=\"${1:password}\" name=\"${2:#}\" class=\"${3:#}\" placeholder=\"${4:#}\">",
-					"inp:tel": "<input type=\"${1:tel}\" name=\"${2:#}\" class=\"${3:#}\" placeholder=\"${4:#}\">",
-					"inp:file": "<input type=\"${1:file}\" name=\"${2:#}\" class=\"${3:#}\">",
-					"inp:btn": "<input type=\"${1:button}\" value=\"${2:#}\" class=\"${3:#}\">",
-					"inp:sub": "<input type=\"${1:submit}\" value=\"${2:#}\" class=\"${3:#}\">",
-					"inp:res": "<input type=\"${1:reset}\" value=\"${2:#}\" class=\"${3:#}\">",
-				}
-		},
-
-		"css": {
+	"config": {
+		"markup": {
 			"snippets": {
-				"!": "*{\n	padding:0;\n	margin:0;\n	border:0;\n}\n*,*::after,*::before{\n	-moz-box-sizing:border-box;\n	-webkit-box-sizing:border-box;\n	box-sizing:border-box\n}\n*:active,*:focus{\n	outline:none\n}\na:active,a:focus{\n	outline:none\n}\naside,footer,header,nav{\n	display:block\n}\nbody,html{\n	height:100%;\n	width:100%;\n	font-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif;\n	font-size:100%;\n	line-height:1;\n	font-size:14px;\n	-ms-text-size-adjust:100%;\n	-moz-text-size-adjust:100%;\n	-webkit-text-size-adjust:100%\n}\nbutton,input,textarea{\n	font-family:inherit\n}\ninput::-ms-clear{\n	display:none;\n	width:0;\n	height:0\n}\nbutton{\n	cursor:pointer\n}\nbutton::-moz-focus-inner{\n	padding:0;\n	border:0\n}\na,a:visited{\n	text-decoration:none\n}\na:hover{\n	text-decoration:none\n}\nul li{\n	list-style:none\n}\nimg{\n	vertical-align:top\n}\nh1,h2,h3,h4,h5,h6{\n	font-size:inherit;\n	font-weight:400\n}",
-
-				"after":"${1:}.::after{\n  content: \"${2:}\";\n  position: absolute;\n  top: ${3:0};\n  left: ${4:0};\n}",
-				"before":"${1:}.::before{\n  content: \"${2:}\";\n  position: absolute;\n  top: ${3:0};\n  left: ${4:0};\n}",
-
-				"mmt": "margin: ${1:0} 0 0 0;",
-				"mmr": "margin: 0 ${1:0} 0 0;",
+				// "wrap": "<div class = \"wrapper\">|</div>",
+				"wrap": "div.wrapper",
+			},
+			"options": {
+				"output.selfClosingStyle": "xhtml"
+			}
+		}
+	},
+	"snippets":
+	{
+		"css":
+		{
+			"snippets":
+			{
+				"!": "*{\n\tpadding:0;\n\tmargin:0;\n\tborder:0;\n}\n*,*::after,*::before{\n\t-moz-box-sizing:border-box;\n\t-webkit-box-sizing:border-box;\n\tbox-sizing:border-box\n}\n*:active,*:focus{\n\toutline:none\n}\na:active,a:focus{\n\toutline:none\n}\naside,footer,header,nav{\n\tdisplay:block\n}\nbody,html{\n\theight:100%;\n\twidth:100%;\n\tfont-family: Arial, \"Helvetica Neue\", Helvetica, sans-serif;\n\tfont-size:100%;\n\tline-height:1;\n\tfont-size:14px;\n\t-ms-text-size-adjust:100%;\n\t-moz-text-size-adjust:100%;\n\t-webkit-text-size-adjust:100%\n}\nbutton,input,textarea{\n\tfont-family:inherit\n}\ninput::-ms-clear{\n\tdisplay:none;\n\twidth:0;\n\theight:0\n}\nbutton{\n\tcursor:pointer\n}\nbutton::-moz-focus-inner{\n\tpadding:0;\n\tborder:0\n}\na,a:visited{\n\ttext-decoration:none\n}\na:hover{\n\ttext-decoration:none\n}\nul li{\n\tlist-style:none\n}\nimg{\n\tvertical-align:top\n}\nh1,h2,h3,h4,h5,h6{\n\tfont-size:inherit;\n\tfont-weight:400\n}",
+				"after": "${1:}.::after{\n  content: \"${2:}\";\n  position: absolute;\n  top: ${3:0};\n  left: ${4:0};\n}",
+				"bdra": "border-radius: |;",
+				"before": "${1:}.::before{\n  content: \"${2:}\";\n  position: absolute;\n  top: ${3:0};\n  left: ${4:0};\n}",
+				"df": "display: flex;",
 				"mmb": "margin: 0 0 ${1:0} 0;",
 				"mml": "margin: 0 0 0 ${1:0};",
-				
+				"mmr": "margin: 0 ${1:0} 0 0;",
+				"mmt": "margin: ${1:0} 0 0 0;",
 				"mmx": "margin: 0 ${1:0};",
 				"mmy": "margin: ${1:0} 0;",
-				
-				"ppt": "padding: ${1:0} 0 0 0;",
-				"ppr": "padding: 0 ${1:0} 0 0;",
 				"ppb": "padding: 0 0 ${1:0} 0;",
 				"ppl": "padding: 0 0 0 ${1:0};",
-				
+				"ppr": "padding: 0 ${1:0} 0 0;",
+				"ppt": "padding: ${1:0} 0 0 0;",
 				"ppx": "padding: 0 ${1:0};",
 				"ppy": "padding: ${1:0} 0;",
 				"bdra": "border-radius: |;",
 				
 				// "bdra": "border-radius:${1:0} ${2:0} ${3:0} ${4:0};",
-				
+
 				"fonts": "@font-face {\n	font-family: '${1:font_name}';\n	src: url('../fonts/${2:font_file}.eot');\n	src: url('../fonts/${2:font_file}.woff') format('woff'), url('../fonts/${2:font_file}.ttf') format('truetype'), url('../fonts/${2:font_file}.svg') format('svg');\n	font-weight: ${3:400};\n	font-style: normal;\n}"
 			}
 		},
-	}
+		"html":
+		{
+			"snippets":
+			{
+				"!": "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<title>|</title>\n</head>\n<body>\n\t\n</body>\n</html>",
+				"!!": "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n\t<link rel=\"stylesheet\" href=\"|\" type=\"text/css\" charset=\"utf-8\">\n\t<title>|</title>\n</head>\n<body>\n\t\n<script type=\"text/javascript\" src=\"|\"></script>\n</body>\n</html>",
+				"!!!": "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta name=\"format-detection\" content=\"telephone=no\">\n\t<meta name=\"description\" content=\"Описание страницы\"/>\n\t<link href=\"#\" rel=\"shortcut icon\" type=\"image/x-icon\"/>\n\t<meta name=\"keywords\" content=\"ключевые слова\"/>\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n\t<meta name=\"HandheldFriendly\" content=\"true\">\n\n\t<meta property=\"og:locale\" content=\"ru_RU\">\n\t<meta property=\"og:type\" content=\"article\">\n\t<meta property=\"og:title\" content=\"Заголовок репоста\">\n\t<meta property=\"og:description\" content=\"Описание репоста\">\n\t<meta property=\"og:image\" content=\"#\">\n\t<meta property=\"og:url\" content=\"#\">\n\t<meta property=\"og:site_name\" content=\"название сайта\">\n\n\t<meta name=\"twitter:card\" content=\"summary\">\n\t<meta name=\"twitter:site\" content=\"Имя автора\">\n\t<meta name=\"Название твита\" content=\"Название страницы\">\n\t<meta name=\"Описание твита\" content=\"Описание страницы\">\n\t<meta name=\"twitter:image\" content=\"#\">\n\n\t<title>|</title>\n\t<link rel=\"stylesheet\" href=\"|\" type=\"text/css\" charset=\"utf-8\">\n</head>\n<body>\n\t\n<script type=\"text/javascript\" src=\"|\"></script>\n</body>\n</html>",
+				"a!": "<a href=\"|\" title=\"|\" type=\"|\" target=\"|\"></a>",
+				"container": "<div class = \"container\">|</div>",
+				"form": "<form action=\"${1:#}\" method=\"${2:post}\">\n\t|\n</form>",
+				"form:get": "<form action=\"${1:#}\" method=\"get\">\n\t|\n</form>",
+				"form:post": "<form action=\"${1:#}\" method=\"post\">\n\t|\n</form>",
+				"inp": "<input type=\"${1:text}\" name=\"${2:#}\" class=\"${3:#}\" placeholder=\"${4:#}\">",
+				"inp:btn": "<input type=\"${1:button}\" value=\"${2:#}\" class=\"${3:#}\">",
+				"inp:file": "<input type=\"${1:file}\" name=\"${2:#}\" class=\"${3:#}\">",
+				"inp:mail": "<input type=\"${1:email}\" name=\"${2:#}\" class=\"${3:#}\" placeholder=\"${4:#}\">",
+				"inp:pass": "<input type=\"${1:password}\" name=\"${2:#}\" class=\"${3:#}\" placeholder=\"${4:#}\">",
+				"inp:res": "<input type=\"${1:reset}\" value=\"${2:#}\" class=\"${3:#}\">",
+				"inp:sub": "<input type=\"${1:submit}\" value=\"${2:#}\" class=\"${3:#}\">",
+				"inp:tel": "<input type=\"${1:tel}\" name=\"${2:#}\" class=\"${3:#}\" placeholder=\"${4:#}\">",
+				"scr": "<script type=\"text/javascript\">\n\t|\n</script>",
+				"scr:src": "<script type=\"text/javascript\" src=\"|\"></script>",
+				"wrap": "<div class = \"wrapper\">|</div>"
+			}
+		}
+	},
+	"telemetry": false,
+	"uid": "e9517e88-7958-4d0f-9ccc-e7eddb84a3f2"
 }
